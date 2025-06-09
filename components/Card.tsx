@@ -1,5 +1,7 @@
+'use client'
 import Image from "next/image"
 import Link from "next/link";
+import { useState } from "react";
 
 type CardProps = {
     imdbID: string;
@@ -10,6 +12,11 @@ type CardProps = {
 };
 
 const Card = ({ imdbID, image_url, title, type, year }: CardProps) => {
+    const fallback = '/images/miss_poster.png';
+    const [imgSrc, setImgSrc] = useState(
+        image_url === 'N/A' ? fallback : image_url
+    );
+
     return(
         // <Link href={`https://www.imdb.com/title/${imdbID}`} target="_blank" className="w-32 md:w-40 group">
         //     <div className="rounded-md w-full h-60 mb-2 overflow-hidden">
@@ -30,11 +37,12 @@ const Card = ({ imdbID, image_url, title, type, year }: CardProps) => {
         <Link href={`https://www.imdb.com/title/${imdbID}`} target="_blank" className="group">
             <div className="rounded-md w-full h-60 lg:h-80 mb-2 overflow-hidden">
                 <Image
-                src={image_url === 'N/A' ? '/fallback.jpg' : image_url}
+                src={imgSrc}
+                onError={() => setImgSrc(fallback)}
+                alt="Poster"
                 width={1000}
                 height={1000}
                 className="w-full object-cover h-full transition-all duration-300 ease-in-out group-hover:scale-105"
-                alt="Image"
                 />
             </div>
             <p className="font-bold mb-1 transition-colors duration-300 group-hover:text-blue-500">{title}</p>
